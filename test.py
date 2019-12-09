@@ -1,4 +1,3 @@
-
 from tkinter import *
 import random
 
@@ -101,11 +100,28 @@ extraDamage = 0
 def nameEntered():
     player1 =  txt.get()
  
-    res = "You've come face to face with bandit. " + player1 + " must battle"
+    res = player1 + " has come face to face with bandit. " + player1 + " must battle"
 
     menu(playerHP, playerMaxHP, playerMP, playerSP, cpuHP, cpuMP, cpuSP, playerChoice)
 
-    lbl2.configure(text= res)    
+    lbl.configure(text= res)
+
+    nameBtn.destroy()
+    txt.destroy()
+    
+
+def removeButtons():
+    atkBtn.destroy()
+    spellBtn.destory()
+
+def enemyAtk():
+    atk = random.randint(1,3)
+    if (atk == 1):
+        banditBash()
+    if (atk == 2):
+        banditPoisonBlade()
+    if (atk == 3):
+        banditLifeSteal()
 
 def Bash():
 
@@ -113,7 +129,7 @@ def Bash():
 
     damage = random.randint(1, 10)
 
-    banditBash()
+    enemyAtk()
 
     cpuHP = cpuHP -  damage
 
@@ -123,10 +139,8 @@ def Bash():
         res = "Bandit took " + str(damage) + " damage."
         menu(playerHP, playerMaxHP, playerMP, playerSP, cpuHP, cpuMP, cpuSP, playerChoice)
 
-    lbl2.configure(text = res)
+    lbl.configure(text = res)
     
-
-
 def Magic():
 
     frostbiteBtn = Button(window, text="Frostbite", command=Frostbite)
@@ -136,12 +150,11 @@ def Magic():
     shineBtn = Button(window, text="Shine", command=Shine)
     permaBtn = Button(window, text="Permafrost", command=Permafrost)
 
-    frostbiteBtn.grid(column=1, row=5)
-    healBtn.grid(column=2, row=5)
-    lightBtn.grid(column=3, row=5)
-    blizzBtn.grid(column=4, row=5)
-    shineBtn.grid(column=5, row=5)
-    permaBtn.grid(column=6, row=5)
+    frostbiteBtn.grid(column=3, row=5)
+    healBtn.grid(column=3, row=6)
+    lightBtn.grid(column=3, row=7)
+    blizzBtn.grid(column=3, row=8)
+    permaBtn.grid(column=3, row=9)
 
 def Frostbite():
     global cpuHP
@@ -210,16 +223,63 @@ def banditBash():
     else:
         res = "You took " + str(damage) + " damage."
     
-    lbl.configure(text = res)
+    lbl3.configure(text = res)
+    lbl4.configure(text = "")
+    
+def banditPoisonBlade():
+    global playerHP
+    
+    damage = random.randint(7,10)
+    
+    poison = random.randint(1, 3)
+
+    playerHP = playerHP - damage - poison
+
+    if(playerHP <= 0):
+        res = "You have died"
+        res2 = ""
+    else:
+        res = "Bandit used Poison Blade. You took " + str(damage) + " damage."
+        res2 = "You also take " + str(poison) + " damage from poison"
+    
+    lbl3.configure(text = res)
+    lbl4.configure(text = res2)
+
+def banditLifeSteal():
+    global playerHP
+    global cpuHP
+
+    damage = random.randint(7,15)
+    heal = damage/2
+    cpuHP += heal
+    playerHP -= damage
+
+    res = "You took " + str(damage) + " damage."
+    res2 = "Bandit healed for " + str(heal) + " life."
+    lbl3.configure(text = res)
+    lbl4.configure(text = res2)
 
 def menu(playerHP, playerMaxHP, playerMP, playerSP, cpuHP, cpuMP, cpuSP, playerChoice):
-    res = "You: HP:" + str(playerHP) + " MP: " + str(playerMP) + " SP: " + str(playerSP) 
-    res2 = "Bandit: HP:" + str(cpuHP) + " MP: " + str(cpuMP) + " SP: " + str(cpuSP)
+    if(playerHP <= 0):
+        lbl.configure(text = "You have lost")
+        lbl2.configure(text = "")
+        lbl3.configure(text = "")
+        lbl4.configure(text = "")
+        atkButton.destroy()
+    elif(cpuHP<= 0):
+        lbl.configure(text = "You have won")
+        lbl2.configure(text = "")
+        lbl3.configure(text = "")
+        lbl4.configure(text = "")
+        atkButton.destroy()
+    else:
+        res = "You: HP:" + str(playerHP) + " MP: " + str(playerMP) + " SP: " + str(playerSP) 
+        res2 = "Bandit: HP:" + str(cpuHP) + " MP: " + str(cpuMP) + " SP: " + str(cpuSP)
 
-    lbl3.configure(text=res)
-    lbl4.configure(text=res2)
+        lbl5.configure(text=res)
+        lbl6.configure(text=res2)
 
-    menuChoice()
+        menuChoice()
 
     
 def menuChoice():
@@ -236,7 +296,7 @@ def battle():
  
 window = Tk()
  
-window.title("Welcome to LikeGeeks app")
+window.title("The Game")
  
 window.geometry('500x500')
  
@@ -247,6 +307,10 @@ lbl2 = Label(window, text="")
 lbl3 = Label(window, text="")
 
 lbl4 = Label(window, text="")
+
+lbl5 = Label(window, text="")
+
+lbl6 = Label(window, text="")
  
 lbl.grid(column=0, row=0)
 
@@ -255,6 +319,10 @@ lbl2.grid(column=0, row=1)
 lbl3.grid(column=0, row=2)
 
 lbl4.grid(column=0, row=3)
+
+lbl5.grid(column=0, row=4)
+
+lbl6.grid(column=0, row=5)
 
 txt = Entry(window,width=10)
  
@@ -265,3 +333,4 @@ nameBtn = Button(window, text="Enter", command=nameEntered)
 nameBtn.grid(column=2, row=0)
  
 window.mainloop()
+
